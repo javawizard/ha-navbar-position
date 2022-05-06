@@ -2,7 +2,7 @@
 
 A Home Assistant frontend plugin that allows the navigation bar to be moved to the bottom of the screen.
 
-<img src="images/screenshot.png" width="400">
+![screenshot](images/screenshot.png)
 
 # Installation
 
