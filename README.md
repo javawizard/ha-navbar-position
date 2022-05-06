@@ -33,3 +33,7 @@ http://<hass>:8123/some-dashboard/some-view?navbar_cache
 ```
 
 There will likely be additional ways to configure this plugin in the future - pull requests gladly accepted.
+
+# Limitations
+
+The page is scanned every second to see if the header has appeared or has been replaced. This means that while switching between views within a single dashboard leaves the navbar at the bottom, **switching between dashboards or other pages in the Home Assistant UI will cause the navbar to jump back to the top for ~1 second when you return to a dashboard.** PRs gladly accepted to sprinkle some more `MutationObserver`s around to get rid of that delay.
