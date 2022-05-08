@@ -87,3 +87,31 @@ class NavbarPosition {
 
 window.navbarPosition = new NavbarPosition();
 window.navbarPosition.start();
+
+// This is the quickest, hackiest thing I could throw together to allow the
+// navbar to be moved on devices that don't readily allow inputting a custom
+// URL (like the HA mobile apps). It really ought to be redone to actually
+// look halfway decent.
+class NavbarPositionConfigurationCard extends HTMLElement {
+  set hass(hass) {
+    if (!this.content) {
+      this.innerHTML = `
+        <ha-card>
+          <div class="card-content">
+            <button onclick="if (localStorage.getItem('navbar_position') === 'bottom') { localStorage.removeItem('navbar_position'); } else { localStorage.setItem('navbar_position', 'bottom'); } window.location.reload();">Toggle navigation bar position</button>
+          </div>
+        </ha-card>
+      `;
+    }
+  }
+
+  setConfig(config) {
+  }
+}
+
+customElements.define('navbar-position-configuration-card', NavbarPositionConfigurationCard);
+window.customCards.push({
+  type: 'navbar-position-configuration-card',
+  name: 'Navbar Position Configuration Card',
+  description: 'A simple card that allows toggling where the dashboard navigation bar is shown'
+});
