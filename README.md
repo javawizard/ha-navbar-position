@@ -12,7 +12,9 @@ Or install manually by dropping `ha-navbar-position.js` into your Lovelace dashb
 
 # Usage
 
-Right now this plugin is activated by adding `navbar=bottom` to the dashboard URL, like so:
+## Via the URL
+
+The primary way this plugin is activated is by adding `navbar=bottom` to the dashboard URL, like so:
 
 ```
 http://<hass>:8123/some-dashboard/some-view?navbar=bottom
@@ -35,6 +37,12 @@ http://<hass>:8123/some-dashboard/some-view?navbar_cache
 ```
 
 There will likely be additional ways to configure this plugin in the future - pull requests gladly accepted.
+
+## Via custom card
+
+For scenarios where it isn't possible to edit the URL directly (e.g. when using the Home Assistant mobile apps), you can toggle the navigation bar position on a per-device basis using the `Navbar Position Configuration Card` custom card.
+
+Add it to a dashboard of your choosing, then click the card's "toggle navigation bar position" button on any device where you want to move the navbar to the bottom of the screen. The button will save the change to `localStorage`; you can then get rid of the card and the navbar will continue to show up at the bottom of the screen on the device in question.
 
 # Limitations
 
