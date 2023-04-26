@@ -48,7 +48,7 @@ class NavbarPosition {
   }
 
   applyNavbarPositionChanges() {
-    let appHeader = this.huiRootElement?.querySelector("app-header");
+    let appHeader = this.huiRootElement?.querySelector(".header");
 
     if (appHeader && (appHeader.style.top !== 'auto' || appHeader.style.bottom !== '0px')) {
       appHeader.style.setProperty('top', 'auto', 'important');
