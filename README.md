@@ -1,6 +1,8 @@
 # Navbar Position
 
-A Home Assistant frontend plugin that allows the navigation bar to be moved to the bottom of the screen.
+A Home Assistant frontend plugin that allows the navigation bar to be moved to the bottom of the screen. 
+
+# Note: This repo has been updated to work with HA versions > 2023.04, it will not work on anything lower, please keep this in mind if you open an issue and are using an older version. 
 
 ![screenshot](images/screenshot.png)
 
