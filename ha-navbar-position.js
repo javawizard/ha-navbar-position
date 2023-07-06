@@ -1,9 +1,6 @@
 class NavbarPosition {
   constructor() {
     this.queryParams = new URLSearchParams(window.location.search);
-
-    this.contentContainer = null;
-    this.contentContainerMutationObserver = null;
   }
 
   start() {
@@ -57,30 +54,18 @@ class NavbarPosition {
   }
 
   applyPaddingChanges() {
-    let contentContainer = this.huiRootElement?.querySelector("#layout")?.shadowRoot?.querySelector("#contentContainer");
+    let contentContainer = this.huiRootElement?.querySelector("#view");
 
-    if (contentContainer !== this.contentContainer) {
-      if (this.contentContainerMutationObserver) {
-        this.contentContainerMutationObserver.disconnect();
-        this.contentContainerMutationObserver = null;
+    const topPadding = 'env(safe-area-inset-top)';
+    const bottomPadding = 'calc(var(--header-height) + env(safe-area-inset-bottom))';
+
+    if (contentContainer) {
+      if (contentContainer.style.top !== topPadding || contentContainer.style.paddingBottom !== bottomPadding) {
+        contentContainer.style.setProperty('padding-top', 'env(safe-area-inset-top)');
+        contentContainer.style.setProperty('padding-bottom', 'calc(var(--header-height) + env(safe-area-inset-bottom))');
       }
-
-      this.contentContainer = contentContainer;
-
-      if (contentContainer) {
-        contentContainer.style.setProperty('padding-top', '0px');
-        contentContainer.style.setProperty('padding-bottom', '56px');
-
-        this.contentContainerMutationObserver = new MutationObserver(() => {
-          if (contentContainer.style.paddingTop != '0px' || contentContainer.style.paddingBottom != '56px') {
-            contentContainer.style.paddingTop = '0px';
-            contentContainer.style.paddingBottom = '56px';
-          }
-        }).observe(contentContainer, {
-          attributes: true,
-          attributeFilter: ['style']
-        });
-      }
+    } else {
+      console.warn('ha-navbar-position: content container element not found. please log an issue against github.com/javawizard/ha-navbar-position.');
     }
   }
 }
