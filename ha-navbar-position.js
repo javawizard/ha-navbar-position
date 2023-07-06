@@ -64,8 +64,6 @@ class NavbarPosition {
         contentContainer.style.setProperty('padding-top', 'env(safe-area-inset-top)');
         contentContainer.style.setProperty('padding-bottom', 'calc(var(--header-height) + env(safe-area-inset-bottom))');
       }
-    } else {
-      console.warn('ha-navbar-position: content container element not found. please log an issue against github.com/javawizard/ha-navbar-position.');
     }
   }
 }
