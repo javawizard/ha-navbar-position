@@ -1,28 +1,37 @@
 class NavbarPosition {
+  get huiRootElement() {
+    return document
+      .querySelector("home-assistant")?.shadowRoot
+      ?.querySelector("home-assistant-main")?.shadowRoot
+      ?.querySelector("ha-panel-lovelace")?.shadowRoot
+      ?.querySelector("hui-root")?.shadowRoot;
+  }
+
   constructor() {
     this.queryParams = new URLSearchParams(window.location.search);
   }
 
-  start() {
-    let navbarPosition;
-
-    if (this.queryParams.get('navbar_cache') !== null) {
-      navbarPosition = this.queryParams.get('navbar');
-
-      if (navbarPosition) {
-        window.localStorage.setItem('navbar_position', navbarPosition);
-      } else {
-        window.localStorage.removeItem('navbar_position');
-      }
-    } else if (this.queryParams.get('navbar') !== null) {
-      navbarPosition = this.queryParams.get('navbar');
-    } else {
-      navbarPosition = window.localStorage.getItem('navbar_position');
-    }
+  init() {
+    let navbarPosition = fetchNavbarFromCache();
 
     if (navbarPosition === 'bottom') {
       this.applyChangesAndReschedule();
     }
+  }
+
+  fetchNavbarFromCache() {
+    if (this.queryParams.get('navbar_cache')) {
+      let navbarPosition = this.queryParams.get('navbar');
+
+      if (!navbarPosition) {
+        window.localStorage.removeItem('navbar_position');
+        return;
+      }
+      window.localStorage.setItem('navbar_position', navbarPosition);
+      return navbarPosition;
+    }
+
+    return this.queryParams.get('navbar') ?? window.localStorage.getItem('navbar_position');
   }
 
   applyChangesAndReschedule() {
@@ -32,16 +41,9 @@ class NavbarPosition {
     } catch (e) {
       console.error('ERROR while applying navbar changes:', e);
     } finally {
+      console.log('Finally');
       setTimeout(() => this.applyChangesAndReschedule(), 1000);
     }
-  }
-
-  get huiRootElement() {
-    return document
-      .querySelector("home-assistant")?.shadowRoot
-      ?.querySelector("home-assistant-main")?.shadowRoot
-      ?.querySelector("ha-panel-lovelace")?.shadowRoot
-      ?.querySelector("hui-root")?.shadowRoot;
   }
 
   applyNavbarPositionChanges() {
@@ -55,28 +57,29 @@ class NavbarPosition {
 
   applyPaddingChanges() {
     let contentContainer = this.huiRootElement?.querySelector("#view");
+    if (!contentContainer) {
+      return;
+    }
 
     const topPadding = 'env(safe-area-inset-top)';
     const bottomPadding = 'calc(var(--header-height) + env(safe-area-inset-bottom))';
 
-    if (contentContainer) {
-      if (contentContainer.style.top !== topPadding || contentContainer.style.paddingBottom !== bottomPadding) {
-        contentContainer.style.setProperty('padding-top', 'env(safe-area-inset-top)');
-        contentContainer.style.setProperty('padding-bottom', 'calc(var(--header-height) + env(safe-area-inset-bottom))');
-      }
+    if (contentContainer.style.top !== topPadding || contentContainer.style.paddingBottom !== bottomPadding) {
+      contentContainer.style.setProperty('padding-top', 'env(safe-area-inset-top)');
+      contentContainer.style.setProperty('padding-bottom', 'calc(var(--header-height) + env(safe-area-inset-bottom))');
     }
   }
 }
 
 window.navbarPosition = new NavbarPosition();
-window.navbarPosition.start();
+window.navbarPosition.init();
 
 // This is the quickest, hackiest thing I could throw together to allow the
 // navbar to be moved on devices that don't readily allow inputting a custom
 // URL (like the HA mobile apps). It really ought to be redone to actually
 // look halfway decent.
 class NavbarPositionConfigurationCard extends HTMLElement {
-  set hass(hass) {
+  set hass(_hass) {
     if (!this.content) {
       this.innerHTML = `
         <ha-card>
@@ -86,9 +89,6 @@ class NavbarPositionConfigurationCard extends HTMLElement {
         </ha-card>
       `;
     }
-  }
-
-  setConfig(config) {
   }
 }
 
