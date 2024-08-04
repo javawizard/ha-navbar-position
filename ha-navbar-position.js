@@ -50,6 +50,24 @@ class NavbarPosition {
     if (appHeader && (appHeader.style.top !== 'auto' || appHeader.style.bottom !== '0px')) {
       appHeader.style.setProperty('top', 'auto', 'important');
       appHeader.style.setProperty('bottom', '0px', 'important');
+
+      // ios specific styling
+      const ua = navigator.userAgent;
+      const isIos = /iPad|iPhone|iPod/.test(ua);
+      const isIosWebViewOrStandalone =
+        isIos && (navigator.standalone || /Mobile/.test(ua));
+      if (isIosWebViewOrStandalone) {
+        // bottom clearance for system gesture navigation
+        appHeader.style.setProperty("padding-bottom", "25px", "important");
+
+        // nav icons with a more touch-friendly square aspect ratio
+        const appHeaderTabs = appHeader.querySelectorAll("paper-tab");
+        if (appHeaderTabs && appHeaderTabs.length) {
+          appHeaderTabs.forEach((tab) =>
+            tab.style.setProperty("padding", "0 16px", "important")
+          );
+        }
+      }
     }
   }
 
